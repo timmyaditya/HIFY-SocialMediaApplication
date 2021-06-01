@@ -63,6 +63,8 @@ public class Personal_Chat_Activity extends AppCompatActivity {
     EditText chatMessage;
     Button sendButton;
     //
+    UserApi userApi = UserApi.getInstance();
+
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference;
@@ -83,6 +85,8 @@ public class Personal_Chat_Activity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
+        //serialization is a process of converting a object into stream of data so that it gets converted to bytes
+        //and it could be easily transfered/shared to various activity or databases
         UserModal userModal = (UserModal) bundle.getSerializable("userModel");
         String documentId = bundle.getString("documentId");
         Toast.makeText(this, documentId, Toast.LENGTH_SHORT).show();
@@ -103,9 +107,6 @@ public class Personal_Chat_Activity extends AppCompatActivity {
         //sort messageList
         //adapter
         messagesAdapter=new MessagesAdapter(getApplicationContext(),messagesList);
-
-
-
 
         recyclerView.setAdapter(messagesAdapter);
         sendButton.setOnClickListener(new View.OnClickListener() {
@@ -132,13 +133,14 @@ public class Personal_Chat_Activity extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    Toast.makeText(Personal_Chat_Activity.this, "", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Personal_Chat_Activity.this, "Message send successfully", Toast.LENGTH_SHORT).show();
                                     chatMessage.setText("");
+
+                                    //this is a higher level api provided by android that manages interactin between all other parts
                                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
 //Hide:
+                                    //this method toggles the input method window displayed in this case the input is the message et.
                                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
-
 
                                 }
                             })
@@ -180,6 +182,11 @@ public class Personal_Chat_Activity extends AppCompatActivity {
                 for (QueryDocumentSnapshot doc : value) {
                     MessageModel msg = doc.toObject(MessageModel.class);
                     // Log.i("info",user.getEmail());
+                    if(msg.getSendBy().equals(userApi.getUid())){
+                        msg.setSenderName(userApi.getUsername());
+                    }else{
+                        msg.setSenderName((String) hisName.getText());
+                    }
                     messagesList.add(msg);
                 }
                 Collections.sort(messagesList, new Comparator<MessageModel>() {
@@ -193,8 +200,8 @@ public class Personal_Chat_Activity extends AppCompatActivity {
                         }
                     }
                 });
+                //scrolling down to the last message
                 recyclerView.scrollToPosition(messagesList.size() - 1);
-
                 Log.i("info","data set changed");
                 messagesAdapter.notifyDataSetChanged();
             }

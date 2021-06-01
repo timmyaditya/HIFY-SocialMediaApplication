@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,11 +29,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import Utils.PostModel;
 import Utils.UserApi;
 import de.hdodenhof.circleimageview.CircleImageView;
 import fragments.UpdateProfileFragment;
+import ui.ImageGridAdapter;
+import ui.PostRecyclerAdapter;
+
 public class ProfileFragment extends Fragment {
     FirebaseUser currentuser;
     FirebaseAuth mAuth;
@@ -39,6 +55,20 @@ public class ProfileFragment extends Fragment {
     CircleImageView profile_image_container;
     ImageView coverImageContainer;
     FloatingActionButton editProfileBtn;
+
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseAuth.AuthStateListener authStateListener;
+    FirebaseUser currentUser;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference collectionReference = db.collection("post");
+
+    UserApi userApi = UserApi.getInstance();
+    List<PostModel> postModelList = new ArrayList<>();
+    RecyclerView recyclerView;
+    ImageGridAdapter imageGridAdapter;
+
+
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -59,14 +89,21 @@ public class ProfileFragment extends Fragment {
         firebaseDatabase=FirebaseDatabase.getInstance();
         databaseReference=firebaseDatabase.getReference("Users");
 
+
         tv_username = view.findViewById(R.id.fp_username);
         tv_bio = view.findViewById(R.id.fp_bio);
         tv_prof = view.findViewById(R.id.fp_profession);
+
 
         profile_image_container =(CircleImageView) view.findViewById(R.id.fp_profileImage);
         coverImageContainer=view.findViewById(R.id.fp_cover);
 
         editProfileBtn=view.findViewById(R.id.fp_editprofile);
+
+        recyclerView = view.findViewById(R.id.fp_display_post_images);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+
+
 
         UserApi userApi=UserApi.getInstance();
 
@@ -97,6 +134,35 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+        loadPostFromFirebase();
+
         return view;
+    }
+
+    private void loadPostFromFirebase() {
+
+        collectionReference
+                .whereEqualTo("uid", userApi.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TAG", "onComplete: getting images");
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                                PostModel p = document.toObject(PostModel.class);
+                                postModelList.add(p);
+                                Log.d("TAG", "onComplete: "+p.getImageUrl());
+                            }
+
+                            imageGridAdapter = new ImageGridAdapter(ProfileFragment.this, postModelList);
+                            recyclerView.setAdapter(imageGridAdapter);
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
     }
 }

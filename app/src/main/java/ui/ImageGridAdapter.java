@@ -15,10 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.myapplication.ProfileFragment;
 import com.example.myapplication.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Utils.PostModel;
 
@@ -26,11 +28,20 @@ public class ImageGridAdapter extends RecyclerView.Adapter<ImageGridAdapter.MyVi
 
     ArrayList personImages;
 
+    List<PostModel> postModelList;
+
     Context context;
+    ProfileFragment profileFragment;
     public ImageGridAdapter(Context context, ArrayList personImages) {
         this.context = context;
         this.personImages = personImages;
     }
+
+    public ImageGridAdapter(ProfileFragment context, List<PostModel> postModelList) {
+        this.profileFragment = context;
+        this.postModelList = postModelList;
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // infalte the item Layout
@@ -42,16 +53,21 @@ public class ImageGridAdapter extends RecyclerView.Adapter<ImageGridAdapter.MyVi
 
 
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
-        final PostModel pm = (PostModel) personImages.get(position);
+        final PostModel pm = (PostModel) postModelList.get(position);
         String imageUrl;
         imageUrl = pm.getImageUrl();
 
-        try {
-            Glide.with(context).load(imageUrl).into(holder.post_image);
-
-        } catch (Exception e) {
-            Glide.with(context).load(R.drawable.logo).into(holder.post_image);
-        }
+        Picasso.get()
+                .load(imageUrl)
+                .placeholder(R.drawable.image_one)
+                .fit()
+                .into(holder.post_image);
+//        try {
+//            Glide.with(context).load(imageUrl).into(holder.post_image);
+//
+//        } catch (Exception e) {
+//            Glide.with(context).load(R.drawable.logo).into(holder.post_image);
+//        }
         // implement setOnClickListener event on item view.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +80,7 @@ public class ImageGridAdapter extends RecyclerView.Adapter<ImageGridAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return personImages.size();
+        return postModelList.size();
     }
      class MyViewHolder extends RecyclerView.ViewHolder {
         // init the item view's

@@ -16,4 +16,5 @@
     <string name="add">Add</string>
     <string name="enter_comment">Enter comment</string>
     <string name="comments">comments:-</string>
+    <string name="reset">reset</string>
 </resources>

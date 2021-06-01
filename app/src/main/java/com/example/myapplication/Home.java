@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -77,6 +78,8 @@ public class Home extends Fragment implements PostRecyclerAdapter.OnPostClickLis
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Home");
 
         //get data from post collection
         getDataFromFirestore();
@@ -107,6 +110,11 @@ public class Home extends Fragment implements PostRecyclerAdapter.OnPostClickLis
                 firebaseAuth.signOut();
                 startActivity(new Intent(getActivity(),login_signup_getstarted.class));
                 getActivity().finish();
+                break;
+
+            case R.id.todobtn:
+                startActivity(new Intent(getActivity(), TodoActivity.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -143,7 +151,7 @@ public class Home extends Fragment implements PostRecyclerAdapter.OnPostClickLis
 
     @Override
     public void onPostClick(int position) {
-        Toast.makeText(getContext(), "psotion"+position, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "position"+position, Toast.LENGTH_SHORT).show();
         Bundle b = new Bundle();
         PostModel p = postModelList.get(position);
         b.putSerializable("postmodel", p);

@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Personal_Chat_Activity"></activity>
+        <activity android:name=".TodoActivity"></activity>
+        <activity android:name=".Personal_Chat_Activity" />
         <activity
             android:name=".login_signup_getstarted"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
@@ -29,6 +30,7 @@
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

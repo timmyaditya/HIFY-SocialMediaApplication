@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,7 +37,7 @@ public class MessagesFragment extends Fragment {
     RecyclerView recyclerView;
     TextView textView;
 
-    //foriebaseAuth
+    //firebaseAuth
     FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     //firestore
@@ -62,6 +63,10 @@ public class MessagesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragmet_messages, container, false);
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Messages");
+
         //
         recyclerView = view.findViewById(R.id.fragment_messages_messageslist);
         recyclerView.setHasFixedSize(true);

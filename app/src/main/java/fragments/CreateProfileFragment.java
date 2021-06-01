@@ -62,6 +62,8 @@ public class CreateProfileFragment extends Fragment {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference databaseReference = database.getReference("Users");
 
+    UserApi userApi =UserApi.getInstance();
+
     public CreateProfileFragment() {
 
     }
@@ -82,9 +84,12 @@ public class CreateProfileFragment extends Fragment {
         addprofile = (ImageView) view.findViewById(R.id.cp_addprofile);
         cover_container = view.findViewById(R.id.cp_cover);
         profile_container = view.findViewById(R.id.cp_profileImage);
+
         nameEt = view.findViewById(R.id.cp_username);
         bioEt = view.findViewById(R.id.cp_bio);
         ProffEt = view.findViewById(R.id.cp_profession);
+
+        nameEt.setText(userApi.getUsername());
         createProfile = view.findViewById(R.id.cp_createProfile);
 
 
@@ -131,17 +136,20 @@ public class CreateProfileFragment extends Fragment {
         final String bio = bioEt.getText().toString();
         final String username = nameEt.getText().toString();
         final String prof = ProffEt.getText().toString();
+
         //add data is profile
         final HashMap<String, Object> profile = new HashMap<>();
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Creating Profile...It will take a while....");
 
         //check if all fields are filled
-        if (!TextUtils.isEmpty(bio) || !TextUtils.isEmpty(username) || !TextUtils.isEmpty(prof) || String.valueOf(profileUri) != null || String.valueOf(coverUri) != null) {
+        if (!TextUtils.isEmpty(bio) && !TextUtils.isEmpty(username) && !TextUtils.isEmpty(prof) && profileUri!= null && coverUri != null) {
+
             progressDialog.show();
             //upload both images to storage
             final StorageReference reference = mStorageRef.child(System.currentTimeMillis() + "." + getFileExt(profileUri));
             final StorageReference reference1 = mStorageRef.child(System.currentTimeMillis() + "." + getFileExt(coverUri));
+
             //profile image
             uploadTask = reference.putFile(profileUri);
             Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {

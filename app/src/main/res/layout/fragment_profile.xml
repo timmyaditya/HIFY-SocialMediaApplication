@@ -27,7 +27,7 @@
                 android:id="@+id/fp_cover"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:clickable="true"></ImageView>
+                android:clickable="true" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/fp_profileImage"
@@ -37,7 +37,7 @@
                 app:civ_border_width="10dp"
                 app:civ_border_color="#FFFFFF"
                 android:layout_marginTop="120dp"
-                android:src="@drawable/logo"></de.hdodenhof.circleimageview.CircleImageView>
+                android:src="@drawable/logo" />
 
 
         </RelativeLayout>
@@ -83,16 +83,17 @@
         android:id="@+id/v1"
         android:background="@drawable/shadow"/>
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fp_display_post_images"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@id/v1"
-        android:layout_margin="5dp"
-        android:layout_height="match_parent">
-
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="5dp"
+        tools:ignore="MissingClass">
 
     </androidx.recyclerview.widget.RecyclerView>
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fp_editprofile"

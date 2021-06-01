@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.Profile:
                         UserApi userApi = UserApi.getInstance();
+//                        selected=new ProfileFragment();
                         if(TextUtils.isEmpty(userApi.getBio()))
                         {
                             //go to create profile fragment

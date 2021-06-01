@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,8 +71,6 @@ public class CommentsFragment extends Fragment {
     private ProgressDialog progressDialog;
 
 
-
-
     private List<CommentModel> commentModelList = new ArrayList<CommentModel>();
     private RecyclerView recyclerView;
     private Button commentButton;
@@ -104,6 +103,9 @@ public class CommentsFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Comments");
 
 
         assert getArguments() != null;
